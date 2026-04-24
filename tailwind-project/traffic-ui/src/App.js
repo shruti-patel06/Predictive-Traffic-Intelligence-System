@@ -59,21 +59,20 @@ function App() {
     }
   };
 
-  const fetchHourlyData = async () => {
-    const data = [];
-    const promises = [];
-    for (let h = 0; h < 24; h++) {
-      promises.push(
-        fetch(`${API_BASE_URL}/predict?road=${road}&hour=${h}&day=${day}&weather=${weather}`)
-          .then(res => res.json())
-          .then(d => ({ hour: h, congestion: d.predicted_congestion }))
-      );
-    }
-    const results = await Promise.all(promises);
-    setHourlyData(results);
-  };
-
   useEffect(() => {
+    const fetchHourlyData = async () => {
+      const promises = [];
+      for (let h = 0; h < 24; h++) {
+        promises.push(
+          fetch(`${API_BASE_URL}/predict?road=${road}&hour=${h}&day=${day}&weather=${weather}`)
+            .then(res => res.json())
+            .then(d => ({ hour: h, congestion: d.predicted_congestion }))
+        );
+      }
+      const results = await Promise.all(promises);
+      setHourlyData(results);
+    };
+
     fetchHourlyData();
   }, [road, day, weather]);
 
