@@ -69,10 +69,6 @@ npm install
 npm start
 ```
 
-### Access Points
-- **API**: http://127.0.0.1:8000/predict?road=R1&hour=18
-- **Frontend**: http://localhost:3000
-
 ## 📈 Usage Examples
 
 ### API Request
@@ -96,14 +92,6 @@ curl "http://127.0.0.1:8000/predict?road=R1&hour=18"
 4. **API Deployment**: FastAPI with CORS and error handling
 5. **Frontend Integration**: Real-time predictions with visual feedback
 
-## 🎨 UI/UX Highlights
-
-- **Perceived Intelligence**: 1-second loading delay for professional feel
-- **Visual Hierarchy**: Clear information architecture
-- **Micro-interactions**: Hover effects and smooth transitions
-- **Accessibility**: Color-coded congestion levels
-- **Responsive Design**: Works on desktop and mobile
-
 ## 📊 Performance Metrics
 
 - **API Response Time**: <100ms for predictions
@@ -111,34 +99,9 @@ curl "http://127.0.0.1:8000/predict?road=R1&hour=18"
 - **Frontend Load Time**: Optimized with code splitting
 - **Map Rendering**: Smooth with React Leaflet
 
-## 🔧 Configuration
 
-### Model Parameters
-- n_estimators: 100 (Random Forest)
-- random_state: 42 (reproducibility)
-- Peak hour multiplier: 1.1x for R3
 
-### UI Customization
-- Color schemes: Green/Yellow/Red for congestion levels
-- Map coordinates: Hardcoded for demonstration
-- Chart configuration: 24-hour time series
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
-
-## 📄 License
-
-MIT License - feel free to use for educational and commercial projects.
-
-## 🙏 Acknowledgments
-
-- FastAPI for the robust API framework
-- React Leaflet for map visualization
 - Tailwind CSS for utility-first styling
 - Chart.js for data visualization
 - scikit-learn for machine learning
