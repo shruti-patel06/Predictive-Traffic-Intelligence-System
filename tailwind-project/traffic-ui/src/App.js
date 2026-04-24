@@ -23,9 +23,14 @@ ChartJS.register(
   Legend
 );
 
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE_URL = process.env.REACT_APP_API_URL || (isLocal ? 'http://127.0.0.1:8000' : '');
+
 function App() {
   const [road, setRoad] = useState('R1');
   const [hour, setHour] = useState(12);
+  const [day, setDay] = useState('Monday');
+  const [weather, setWeather] = useState('Clear');
   const [congestion, setCongestion] = useState(null);
   const [loading, setLoading] = useState(false);
   const [hourlyData, setHourlyData] = useState([]);
@@ -41,7 +46,7 @@ function App() {
     setLoading(true);
     setCongestion(null); // Clear previous result
     try {
-      const response = await fetch(`http://127.0.0.1:8000/predict?road=${road}&hour=${hour}`);
+      const response = await fetch(`${API_BASE_URL}/predict?road=${road}&hour=${hour}&day=${day}&weather=${weather}`);
       const data = await response.json();
       // Add 1 second delay for perceived intelligence
       setTimeout(() => {
@@ -59,7 +64,7 @@ function App() {
     const promises = [];
     for (let h = 0; h < 24; h++) {
       promises.push(
-        fetch(`http://127.0.0.1:8000/predict?road=${road}&hour=${h}`)
+        fetch(`${API_BASE_URL}/predict?road=${road}&hour=${h}&day=${day}&weather=${weather}`)
           .then(res => res.json())
           .then(d => ({ hour: h, congestion: d.predicted_congestion }))
       );
@@ -70,7 +75,7 @@ function App() {
 
   useEffect(() => {
     fetchHourlyData();
-  }, [road]);
+  }, [road, day, weather]);
 
   const isPeakHour = (h) => (h >= 8 && h <= 10) || (h >= 17 && h <= 20);
 
@@ -129,8 +134,21 @@ function App() {
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">Controls</h2>
             <div className="space-y-4">
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-medium text-gray-700">Road</label>
+                <button 
+                  onClick={() => {
+                    const now = new Date();
+                    setHour(now.getHours());
+                    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                    setDay(days[now.getDay()]);
+                  }}
+                  className="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 py-1 px-2 rounded transition-colors"
+                >
+                  Set to Live Time
+                </button>
+              </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Road</label>
                 <select
                   value={road}
                   onChange={(e) => setRoad(e.target.value)}
@@ -140,6 +158,33 @@ function App() {
                   <option value="R2">R2</option>
                   <option value="R3">R3</option>
                 </select>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Day of Week</label>
+                  <select
+                    value={day}
+                    onChange={(e) => setDay(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(d => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Weather</label>
+                  <select
+                    value={weather}
+                    onChange={(e) => setWeather(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="Clear">☀️ Clear</option>
+                    <option value="Rain">🌧️ Rain</option>
+                    <option value="Snow">❄️ Snow</option>
+                  </select>
+                </div>
               </div>
               
               <div>

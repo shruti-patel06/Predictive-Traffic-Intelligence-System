@@ -5,14 +5,17 @@ import joblib
 
 df = pd.read_csv("traffic.csv")
 
-# convert road labels into numbers
-le = LabelEncoder()
-df["road"] = le.fit_transform(df["road"])
+# convert labels into numbers
+encoders = {}
+for col in ["road", "day_of_week", "weather"]:
+    le = LabelEncoder()
+    df[col] = le.fit_transform(df[col])
+    encoders[col] = le
 
-X = df[["road", "hour"]]
+X = df[["road", "hour", "day_of_week", "weather"]]
 y = df["congestion"]
 
-model = RandomForestRegressor()
+model = RandomForestRegressor(n_estimators=100, random_state=42)
 model.fit(X, y)
 
-joblib.dump((model, le), "model.pkl")
+joblib.dump((model, encoders), "model.pkl")
